@@ -1321,12 +1321,11 @@ func (p *Satoshi) BeforePackTx(chain consensus.ChainHeaderReader, header *types.
 		}
 	}
 
-	// TODO(cz): test moving this logic here after Fliex's comment
-	// if p.chainConfig.IsPlato(header.Number, header.Time) {
-	// 	if err := p.distributeFinalityReward(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, false, tracer); err != nil {
-	// 		log.Error("distribute finality reward failed", "block hash", header.Hash())
-	// 	}
-	// }
+	if p.chainConfig.IsPlato(header.Number, header.Time) {
+		if err := p.processVoteWeights(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, false, tracer); err != nil {
+			log.Error("process vote weights failed", "block hash", header.Hash())
+		}
+	}
 	return
 }
 
@@ -1358,7 +1357,7 @@ func (p *Satoshi) verifyTurnLength(chain consensus.ChainHeaderReader, header *ty
 	return errMismatchingEpochTurnLength
 }
 
-func (p *Satoshi) distributeFinalityReward(chain consensus.ChainHeaderReader, state vm.StateDB, header *types.Header,
+func (p *Satoshi) processVoteWeights(chain consensus.ChainHeaderReader, state vm.StateDB, header *types.Header,
 	cx core.ChainContext, txs *[]*types.Transaction, receipts *[]*types.Receipt, systemTxs *[]*types.Transaction,
 	usedGas *uint64, mining bool, tracer *tracing.Hooks) error {
 	currentHeight := header.Number.Uint64()
@@ -1430,7 +1429,7 @@ func (p *Satoshi) distributeFinalityReward(chain consensus.ChainHeaderReader, st
 		log.Error("Unable to pack tx for vote", "error", err)
 		return err
 	}
-	msg := p.getSystemMessage(header.Coinbase, common.HexToAddress(systemcontracts.ValidatorContract), params.SystemTxsGas, data, common.Big0)
+	msg := p.getSystemMessage(header.Coinbase, common.HexToAddress(systemcontracts.ValidatorContract), header.GasLimit-params.SystemTxsGas-*usedGas, data, common.Big0)
 	return p.applyTransaction(msg, state, header, cx, txs, receipts, systemTxs, usedGas, mining, tracer)
 }
 
@@ -1521,12 +1520,6 @@ func (p *Satoshi) Finalize(chain consensus.ChainHeaderReader, header *types.Head
 		return err
 	}
 
-	if p.chainConfig.IsPlato(header.Number, header.Time) {
-		if err := p.distributeFinalityReward(chain, state, header, cx, txs, receipts, systemTxs, usedGas, false, tracer); err != nil {
-			return err
-		}
-	}
-
 	if len(*systemTxs) > 0 {
 		return errors.New("the length of systemTxs do not match")
 	}
@@ -1604,12 +1597,6 @@ func (p *Satoshi) FinalizeAndAssemble(chain consensus.ChainHeaderReader, header 
 	err := p.distributeIncoming(p.val, state, header, cx, &body.Transactions, &receipts, nil, &header.GasUsed, true, tracer)
 	if err != nil {
 		return nil, nil, err
-	}
-
-	if p.chainConfig.IsPlato(header.Number, header.Time) {
-		if err := p.distributeFinalityReward(chain, state, header, cx, &body.Transactions, &receipts, nil, &header.GasUsed, true, tracer); err != nil {
-			return nil, nil, err
-		}
 	}
 
 	// should not happen. Once happen, stop the node is better than broadcast the block
