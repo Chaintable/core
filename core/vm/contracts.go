@@ -163,7 +163,7 @@ var PrecompiledContractsPrague = PrecompiledContracts{
 	common.BytesToAddress([]byte{0x11}): &bls12381MapG2{},
 
 	common.BytesToAddress([]byte{0x64}): &btcValidateV2{},
-	common.BytesToAddress([]byte{0x66}): &blsSignatureVerify{},
+	common.BytesToAddress([]byte{0x65}): &blsSignatureVerify{},
 }
 
 var PrecompiledContractsBLS = PrecompiledContractsPrague
