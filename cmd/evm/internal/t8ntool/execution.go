@@ -357,7 +357,7 @@ func (pre *Prestate) Apply(vmConfig vm.Config, chainConfig *params.ChainConfig, 
 
 	// Gather the execution-layer triggered requests.
 	var requests [][]byte
-	if chainConfig.IsPrague(vmContext.BlockNumber, vmContext.Time) {
+	if chainConfig.IsPrague(vmContext.BlockNumber, vmContext.Time) && chainConfig.Satoshi == nil {
 		requests = [][]byte{}
 		// EIP-6110
 		var allLogs []*types.Log
