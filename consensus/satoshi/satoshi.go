@@ -80,8 +80,6 @@ const (
 
 	millisecondsUnit = 500 // Set to 250 if block interval is 750ms; not enforced at the consensus level
 
-	systemRewardPercent = 4 // it means 1/2^4 = 1/16 percentage of gas fee incoming will be distributed to system
-
 	collectAdditionalVotesRewardRatio = 100 // ratio of additional reward for collecting more votes than needed, the denominator is 100
 
 	gasLimitBoundDivisorBeforeLorentz uint64 = 256 // The bound divisor of the gas limit, used in update calculations before lorentz hard fork.
@@ -94,7 +92,6 @@ var (
 	diffInTurn = big.NewInt(2) // Block difficulty for in-turn signatures
 	diffNoTurn = big.NewInt(1) // Block difficulty for out-of-turn signatures
 	// 100 native token
-	maxSystemBalance                  = new(uint256.Int).Mul(uint256.NewInt(100), uint256.NewInt(params.Ether))
 	verifyVoteAttestationErrorCounter = metrics.NewRegisteredCounter("satoshi/verifyVoteAttestation/error", nil)
 	updateAttestationErrorCounter     = metrics.NewRegisteredCounter("satoshi/updateAttestation/error", nil)
 	validVotesfromSelfCounter         = metrics.NewRegisteredCounter("satoshi/verifyVote/self", nil)
