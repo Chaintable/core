@@ -153,9 +153,6 @@ var PrecompiledContractsPrague = PrecompiledContracts{
 	common.BytesToAddress([]byte{0x0f}): &bls12381Pairing{},
 	common.BytesToAddress([]byte{0x10}): &bls12381MapG1{},
 	common.BytesToAddress([]byte{0x11}): &bls12381MapG2{},
-
-	common.BytesToAddress([]byte{0x64}): &btcValidateV2{},
-	common.BytesToAddress([]byte{0x65}): &blsSignatureVerify{},
 }
 
 var PrecompiledContractsBLS = PrecompiledContractsPrague
@@ -169,6 +166,11 @@ var PrecompiledContractsSatoshiHashPower = map[common.Address]PrecompiledContrac
 	common.BytesToAddress([]byte{0x64}): &btcValidateV2{},
 }
 
+// PrecompiledContractsSatoshiPrague contains the default set of pre-compiled contracts from Prague.
+var PrecompiledContractsSatoshiPrague = map[common.Address]PrecompiledContract{
+	common.BytesToAddress([]byte{0x65}): &blsSignatureVerify{},
+}
+
 var (
 	PrecompiledAddressesPrague           []common.Address
 	PrecompiledAddressesCancun           []common.Address
@@ -177,6 +179,7 @@ var (
 	PrecompiledAddressesIstanbul         []common.Address
 	PrecompiledAddressesByzantium        []common.Address
 	PrecompiledAddressesHomestead        []common.Address
+	PrecompiledAddressesSatoshiPrague    []common.Address
 	PrecompiledAddressesSatoshiHashPower []common.Address
 )
 
@@ -205,6 +208,9 @@ func init() {
 	for k := range PrecompiledContractsSatoshiHashPower {
 		PrecompiledAddressesSatoshiHashPower = append(PrecompiledAddressesSatoshiHashPower, k)
 	}
+	for k := range PrecompiledContractsSatoshiPrague {
+		PrecompiledAddressesSatoshiPrague = append(PrecompiledAddressesSatoshiPrague, k)
+	}
 }
 
 func activePrecompiledContracts(rules params.Rules) PrecompiledContracts {
@@ -230,11 +236,18 @@ func activePrecompiledContracts(rules params.Rules) PrecompiledContracts {
 
 	// Add Satoshi specific contracts.
 	// This design ensures that standard Ethereum tests pass.
-	if rules.IsSatoshi && rules.IsHashPower {
+	if rules.IsSatoshi {
 		// We need to clone the precompiles to avoid modifying the global precompiles maps.
 		precompiles = maps.Clone(precompiles)
-		for _, addr := range PrecompiledAddressesSatoshiHashPower {
-			precompiles[addr] = PrecompiledContractsSatoshiHashPower[addr]
+		if rules.IsHashPower {
+			for _, addr := range PrecompiledAddressesSatoshiHashPower {
+				precompiles[addr] = PrecompiledContractsSatoshiHashPower[addr]
+			}
+		}
+		if rules.IsPrague {
+			for _, addr := range PrecompiledAddressesSatoshiPrague {
+				precompiles[addr] = PrecompiledContractsSatoshiPrague[addr]
+			}
 		}
 	}
 
@@ -268,9 +281,15 @@ func ActivePrecompiles(rules params.Rules) []common.Address {
 
 	// Add Satoshi specific addresses.
 	// This design ensures that standard Ethereum tests pass.
-	if rules.IsSatoshi && rules.IsHashPower {
-		addresses = append(addresses,
-			PrecompiledAddressesSatoshiHashPower...)
+	if rules.IsSatoshi {
+		if rules.IsHashPower {
+			addresses = append(addresses,
+				PrecompiledAddressesSatoshiHashPower...)
+		}
+		if rules.IsPrague {
+			addresses = append(addresses,
+				PrecompiledAddressesSatoshiPrague...)
+		}
 	}
 
 	return addresses
