@@ -17,8 +17,8 @@ import (
 )
 
 const (
-	maxCurVoteAmountPerBlock    = 21
-	maxFutureVoteAmountPerBlock = 50
+	maxCurVoteAmountPerBlock    = 41
+	maxFutureVoteAmountPerBlock = 100
 
 	voteBufferForPut = 256
 	// votes in the range (currentBlockNum-256,currentBlockNum+11] will be stored
@@ -27,7 +27,7 @@ const (
 
 	highestVerifiedBlockChanSize = 10 // highestVerifiedBlockChanSize is the size of channel listening to HighestVerifiedBlockEvent.
 
-	defaultMajorityThreshold = 14 // this is an inaccurate value, mainly used for metric acquisition, ref satoshi.verifyVoteAttestation
+	defaultMajorityThreshold = 28 // this is an inaccurate value, mainly used for metric acquisition, ref satoshi.verifyVoteAttestation
 )
 
 var (
