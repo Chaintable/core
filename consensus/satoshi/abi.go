@@ -1011,6 +1011,19 @@ const validatorSetABI = `
   },
   {
     "inputs": [],
+    "name": "INIT_TURN_LENGTH",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "INIT_VALIDATORSET_BYTES",
     "outputs": [
       {
@@ -1380,6 +1393,37 @@ const validatorSetABI = `
   },
   {
     "inputs": [],
+    "name": "getLivingValidators",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "",
+        "type": "bytes[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRankedValidatorList",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getTurnLength",
     "outputs": [
       {
@@ -1554,6 +1598,19 @@ const validatorSetABI = `
   {
     "inputs": [],
     "name": "totalInCome",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "turnLength",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1777,32 +1834,6 @@ const slashABI = `
 		],
 		"name": "validatorSlashed",
 		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "BTCLST_STAKE_ADDR",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "BTCLST_TOKEN_ADDR",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -2819,32 +2850,6 @@ const candidateHubABI = `
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "BTCLST_STAKE_ADDR",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "BTCLST_TOKEN_ADDR",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",
