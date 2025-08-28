@@ -260,7 +260,6 @@ func (eth *Ethereum) stateAtTransaction(ctx context.Context, block *types.Block,
 	var (
 		signer            = types.MakeSigner(eth.blockchain.Config(), block.Number(), block.Time())
 		txs               = block.Transactions()
-		beforeSystemTx    = false
 		lastSystemTxIndex = -1
 	)
 
@@ -283,16 +282,9 @@ func (eth *Ethereum) stateAtTransaction(ctx context.Context, block *types.Block,
 				statedb.SetBalance(consensus.SystemAddress, uint256.NewInt(0), tracing.BalanceChangeUnspecified)
 				statedb.AddBalance(block.Header().Coinbase, balance, tracing.BalanceChangeUnspecified)
 			}
-		}
 
-		// upgrade build-in system contract before system txs
-		if beforeSystemTx {
-			if posa, ok := eth.Engine().(consensus.PoSA); ok {
-				if isSystem, _ := posa.IsSystemTransaction(tx, block.Header()); isSystem {
-					systemcontracts.TryUpdateBuildInSystemContract(eth.blockchain.Config(), block.Number(), parent.Time(), block.Time(), statedb, false)
-					beforeSystemTx = false
-				}
-			}
+			// upgrade build-in system contract before system txs
+			systemcontracts.TryUpdateBuildInSystemContract(eth.blockchain.Config(), block.Number(), parent.Time(), block.Time(), statedb, false)
 		}
 
 		if idx == txIndex {
