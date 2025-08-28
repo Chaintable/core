@@ -1505,7 +1505,6 @@ type Rules struct {
 	IsLuban                                                 bool
 	IsPlato                                                 bool
 	IsHertz                                                 bool
-	IsHertzfix                                              bool
 	IsShanghai, IsKepler, IsCancun                          bool
 	IsBohr, IsPascal, IsPrague, IsLorentz, IsMaxwell        bool
 	IsOsaka, IsVerkle                                       bool
