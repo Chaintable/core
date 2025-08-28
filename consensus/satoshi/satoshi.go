@@ -1010,7 +1010,7 @@ func (p *Satoshi) prepareValidators(chain consensus.ChainHeaderReader, header, p
 		}
 	} else {
 		header.Extra = append(header.Extra, byte(len(newValidators)))
-		if p.chainConfig.IsOnLuban(header.Number, header.Time, parent.Time) {
+		if p.chainConfig.IsOnLuban(header.Number, parent.Time, header.Time) {
 			voteAddressMap = make(map[common.Address]*types.BLSPublicKey, len(newValidators))
 			var zeroBlsKey types.BLSPublicKey
 			for _, validator := range newValidators {
@@ -1221,7 +1221,7 @@ func (p *Satoshi) verifyValidators(chain consensus.ChainHeaderReader, header, pa
 			return errMismatchingEpochValidators
 		}
 		validatorsBytes = make([]byte, validatorsNumber*validatorBytesLength)
-		if p.chainConfig.IsOnLuban(header.Number, header.Time, parent.Time) {
+		if p.chainConfig.IsOnLuban(header.Number, parent.Time, header.Time) {
 			voteAddressMap = make(map[common.Address]*types.BLSPublicKey, len(newValidators))
 			var zeroBlsKey types.BLSPublicKey
 			for _, validator := range newValidators {
