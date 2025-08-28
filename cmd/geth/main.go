@@ -72,7 +72,6 @@ var (
 		utils.RangeLimitFlag,
 		utils.USBFlag,
 		utils.SmartCardDaemonPathFlag,
-		utils.OverrideCancun,
 		utils.OverridePassedForkTime,
 		utils.OverrideLorentz,
 		utils.OverrideMaxwell,

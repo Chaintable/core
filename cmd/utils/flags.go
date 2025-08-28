@@ -291,11 +291,6 @@ var (
 		Value:    ethconfig.Defaults.TriesVerifyMode.String(),
 		Category: flags.FastNodeCategory,
 	}
-	OverrideCancun = &cli.Uint64Flag{
-		Name:     "override.cancun",
-		Usage:    "Manually specify the Cancun fork timestamp, overriding the bundled setting",
-		Category: flags.EthCategory,
-	}
 	OverridePassedForkTime = &cli.Uint64Flag{
 		Name:     "override.passedforktime",
 		Usage:    "Manually specify the hard fork timestamps which have passed on the mainnet, overriding the bundled setting",

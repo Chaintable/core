@@ -263,7 +263,6 @@ func (e *GenesisMismatchError) Error() string {
 // ChainOverrides contains the changes to chain config
 // Typically, these modifications involve hardforks that are not enabled on the CORE mainnet, intended for testing purposes.
 type ChainOverrides struct {
-	OverrideCancun         *uint64
 	OverridePassedForkTime *uint64
 	OverrideLorentz        *uint64
 	OverrideMaxwell        *uint64
@@ -288,9 +287,6 @@ func (o *ChainOverrides) apply(cfg *params.ChainConfig) error {
 	}
 	if o.OverrideMaxwell != nil {
 		cfg.MaxwellTime = o.OverrideMaxwell
-	}
-	if o.OverrideCancun != nil {
-		cfg.CancunTime = o.OverrideCancun
 	}
 	if o.OverrideVerkle != nil {
 		cfg.VerkleTime = o.OverrideVerkle
