@@ -1260,7 +1260,7 @@ func (p *Satoshi) BeforeValidateTx(chain consensus.ChainHeaderReader, header *ty
 		if isOnTheseus {
 			contracts = append(contracts, systemcontracts.FeeMarketContract)
 		}
-		err := p.initContractWithContracts(state, header, cx, txs, receipts, systemTxs, usedGas, false, contracts, tracer)
+		err = p.initContractWithContracts(state, header, cx, txs, receipts, systemTxs, usedGas, false, contracts, tracer)
 		if err != nil {
 			log.Error("init contract failed on demeter fork")
 		}
@@ -1276,7 +1276,14 @@ func (p *Satoshi) BeforeValidateTx(chain consensus.ChainHeaderReader, header *ty
 			log.Error("turn round failed", "block hash", header.Hash())
 		}
 	}
-	return nil
+
+	if p.chainConfig.IsPlato(header.Number, header.Time) {
+		if err = p.processVoteWeights(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, false, tracer); err != nil {
+			log.Error("process vote weights failed", "block hash", header.Hash())
+		}
+	}
+
+	return
 }
 
 func (p *Satoshi) BeforePackTx(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB,
@@ -1301,7 +1308,7 @@ func (p *Satoshi) BeforePackTx(chain consensus.ChainHeaderReader, header *types.
 			contracts = append(contracts, systemcontracts.FeeMarketContract)
 		}
 
-		err := p.initContractWithContracts(state, header, cx, txs, receipts, nil, &header.GasUsed, true, contracts, tracer)
+		err = p.initContractWithContracts(state, header, cx, txs, receipts, nil, &header.GasUsed, true, contracts, tracer)
 		if err != nil {
 			log.Error("init contract failed on demeter fork")
 		}
@@ -1319,10 +1326,11 @@ func (p *Satoshi) BeforePackTx(chain consensus.ChainHeaderReader, header *types.
 	}
 
 	if p.chainConfig.IsPlato(header.Number, header.Time) {
-		if err := p.processVoteWeights(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, false, tracer); err != nil {
+		if err = p.processVoteWeights(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, false, tracer); err != nil {
 			log.Error("process vote weights failed", "block hash", header.Hash())
 		}
 	}
+	
 	return
 }
 
