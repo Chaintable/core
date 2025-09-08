@@ -1326,11 +1326,11 @@ func (p *Satoshi) BeforePackTx(chain consensus.ChainHeaderReader, header *types.
 	}
 
 	if p.chainConfig.IsPlato(header.Number, header.Time) {
-		if err = p.processVoteWeights(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, false, tracer); err != nil {
+		if err = p.processVoteWeights(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, true, tracer); err != nil {
 			log.Error("process vote weights failed", "block hash", header.Hash())
 		}
 	}
-	
+
 	return
 }
 
