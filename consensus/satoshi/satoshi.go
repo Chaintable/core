@@ -1266,6 +1266,12 @@ func (p *Satoshi) BeforeValidateTx(chain consensus.ChainHeaderReader, header *ty
 		}
 	}
 
+	if p.chainConfig.IsPlato(header.Number, header.Time) {
+		if err = p.processVoteWeights(chain, state, header, cx, txs, receipts, systemTxs, usedGas, false, tracer); err != nil {
+			log.Error("process vote weights failed", "block hash", header.Hash())
+		}
+	}
+
 	// If the block is the last one in a round, execute turn round to update the validator set.
 	if p.isRoundEnd(chain, header) {
 		// try turnRound
@@ -1274,12 +1280,6 @@ func (p *Satoshi) BeforeValidateTx(chain consensus.ChainHeaderReader, header *ty
 		if err != nil {
 			// it is possible that turn round failed.
 			log.Error("turn round failed", "block hash", header.Hash())
-		}
-	}
-
-	if p.chainConfig.IsPlato(header.Number, header.Time) {
-		if err = p.processVoteWeights(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, false, tracer); err != nil {
-			log.Error("process vote weights failed", "block hash", header.Hash())
 		}
 	}
 
@@ -1314,6 +1314,12 @@ func (p *Satoshi) BeforePackTx(chain consensus.ChainHeaderReader, header *types.
 		}
 	}
 
+	if p.chainConfig.IsPlato(header.Number, header.Time) {
+		if err = p.processVoteWeights(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, true, tracer); err != nil {
+			log.Error("process vote weights failed", "block hash", header.Hash())
+		}
+	}
+
 	// If the block is the last one in a round, execute turn round to update the validator set.
 	if p.isRoundEnd(chain, header) {
 		// try turnRound
@@ -1324,13 +1330,6 @@ func (p *Satoshi) BeforePackTx(chain consensus.ChainHeaderReader, header *types.
 			log.Error("turn round failed", "block hash", header.Hash())
 		}
 	}
-
-	if p.chainConfig.IsPlato(header.Number, header.Time) {
-		if err = p.processVoteWeights(chain, state, header, cx, txs, receipts, nil, &header.GasUsed, true, tracer); err != nil {
-			log.Error("process vote weights failed", "block hash", header.Hash())
-		}
-	}
-
 	return
 }
 
@@ -1434,7 +1433,7 @@ func (p *Satoshi) processVoteWeights(chain consensus.ChainHeaderReader, state vm
 		log.Error("Unable to pack tx for vote", "error", err)
 		return err
 	}
-	msg := p.getSystemMessage(header.Coinbase, common.HexToAddress(systemcontracts.ValidatorContract), header.GasLimit-params.SystemTxsGas-*usedGas, data, common.Big0)
+	msg := p.getSystemMessage(header.Coinbase, common.HexToAddress(systemcontracts.ValidatorContract), header.GasLimit-params.SystemTxsGas, data, common.Big0)
 	return p.applyTransaction(msg, state, header, cx, txs, receipts, systemTxs, usedGas, mining, tracer)
 }
 
@@ -2057,7 +2056,7 @@ func (p *Satoshi) turnRound(state vm.StateDB, header *types.Header, chain core.C
 		return err
 	}
 	// get system message
-	msg := p.getSystemMessage(header.Coinbase, common.HexToAddress(systemcontracts.CandidateHubContract), header.GasLimit-params.SystemTxsGas, data, common.Big0)
+	msg := p.getSystemMessage(header.Coinbase, common.HexToAddress(systemcontracts.CandidateHubContract), header.GasLimit-params.SystemTxsGas-*usedGas, data, common.Big0)
 	// apply message
 	return p.applyTransaction(msg, state, header, chain, txs, receipts, receivedTxs, usedGas, mining, tracer)
 }
