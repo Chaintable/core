@@ -318,6 +318,7 @@ func (pre *Prestate) Apply(vmConfig vm.Config, chainConfig *params.ChainConfig,
 			receipts = append(receipts, receipt)
 			if tracer != nil {
 				if tracer.Hooks.OnTxEnd != nil {
+					receipt.SetEffectiveGasPrice(tx, evm.Context.BaseFee)
 					tracer.Hooks.OnTxEnd(receipt, nil)
 				}
 				if err = writeTraceResult(tracer, traceOutput); err != nil {
