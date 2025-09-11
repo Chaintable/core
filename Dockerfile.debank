@@ -3,7 +3,7 @@ FROM golang:1.23-alpine as builder
 
 ARG ACCESS_TOKEN
 
-RUN apk add --no-cache git
+RUN apk add --no-cache git make gcc musl-dev linux-headers
 RUN git config --global url."https://x-access-token:${ACCESS_TOKEN}@github.com".insteadOf "https://github.com"
 
 WORKDIR /go-ethereum
