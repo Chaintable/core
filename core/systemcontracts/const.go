@@ -20,5 +20,6 @@ const (
 	BTCLSTStakeContract     = "0x0000000000000000000000000000000000001015"
 	// TODO: eth/feemarket/feemarket.go has hardcoded this address because of import cycle
 	FeeMarketContract   = "0x0000000000000000000000000000000000001016"
+	ChannelContract     = "0x0000000000000000000000000000000000001017"
 	BTCLSTTokenContract = "0x0000000000000000000000000000000000010001"
 )

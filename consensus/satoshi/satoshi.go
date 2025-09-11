@@ -117,6 +117,7 @@ var (
 		common.HexToAddress(systemcontracts.BTCLSTStakeContract):     true,
 		common.HexToAddress(systemcontracts.BTCLSTTokenContract):     true,
 		common.HexToAddress(systemcontracts.FeeMarketContract):       true,
+		common.HexToAddress(systemcontracts.ChannelContract):         true,
 	}
 )
 
@@ -1246,7 +1247,8 @@ func (p *Satoshi) BeforeValidateTx(chain consensus.ChainHeaderReader, header *ty
 	parent := chain.GetHeaderByHash(header.ParentHash)
 	isOnDemeter := p.chainConfig.IsOnDemeter(header.Number, parent.Time, header.Time)
 	isOnTheseus := p.chainConfig.IsOnTheseus(header.Number, parent.Time, header.Time)
-	if isOnDemeter || isOnTheseus {
+	isOnHermes := p.chainConfig.IsOnHermes(header.Number, parent.Time, header.Time)
+	if isOnDemeter || isOnTheseus || isOnHermes {
 		contracts := []string{}
 		if isOnDemeter {
 			contracts = append(contracts, systemcontracts.StakeHubContract)
@@ -1260,6 +1262,10 @@ func (p *Satoshi) BeforeValidateTx(chain consensus.ChainHeaderReader, header *ty
 		if isOnTheseus {
 			contracts = append(contracts, systemcontracts.FeeMarketContract)
 		}
+		if isOnHermes {
+			contracts = append(contracts, systemcontracts.ChannelContract)
+		}
+
 		err = p.initContractWithContracts(state, header, cx, txs, receipts, systemTxs, usedGas, false, contracts, tracer)
 		if err != nil {
 			log.Error("init contract failed on demeter fork")
@@ -1293,7 +1299,8 @@ func (p *Satoshi) BeforePackTx(chain consensus.ChainHeaderReader, header *types.
 	parent := chain.GetHeaderByHash(header.ParentHash)
 	isOnDemeter := p.chainConfig.IsOnDemeter(header.Number, parent.Time, header.Time)
 	isOnTheseus := p.chainConfig.IsOnTheseus(header.Number, parent.Time, header.Time)
-	if isOnDemeter || isOnTheseus {
+	isOnHermes := p.chainConfig.IsOnHermes(header.Number, parent.Time, header.Time)
+	if isOnDemeter || isOnTheseus || isOnHermes {
 		contracts := []string{}
 		if isOnDemeter {
 			contracts = append(contracts, systemcontracts.StakeHubContract)
@@ -1306,6 +1313,9 @@ func (p *Satoshi) BeforePackTx(chain consensus.ChainHeaderReader, header *types.
 		}
 		if isOnTheseus {
 			contracts = append(contracts, systemcontracts.FeeMarketContract)
+		}
+		if isOnHermes {
+			contracts = append(contracts, systemcontracts.ChannelContract)
 		}
 
 		err = p.initContractWithContracts(state, header, cx, txs, receipts, nil, &header.GasUsed, true, contracts, tracer)
@@ -2088,6 +2098,9 @@ func (p *Satoshi) initContract(state vm.StateDB, header *types.Header, chain cor
 	}
 	if p.chainConfig.IsTheseus(header.Number, header.Time) {
 		contracts = append(contracts, systemcontracts.FeeMarketContract)
+	}
+	if p.chainConfig.IsHermes(header.Number, header.Time) {
+		contracts = append(contracts, systemcontracts.ChannelContract)
 	}
 
 	return p.initContractWithContracts(state, header, chain, txs, receipts, receivedTxs, usedGas, mining, contracts, tracer)
