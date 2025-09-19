@@ -152,6 +152,14 @@ func TestUpgrade(t *testing.T) {
 			commitHash: "0689a1e5d69d25f0d74c2363dee640d790130817",
 			network:    mainNet,
 		},
+
+		// Hermes upgrades
+		{
+			name:       "hermes_pigeon",
+			upgrade:    hermesUpgrade[pigeonNet],
+			commitHash: "55c040cc68598789111958020c1cba951752c999",
+			network:    pigeonNet,
+		},
 	}
 
 	for _, tc := range testCases {

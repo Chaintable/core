@@ -11,6 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/systemcontracts/athena"
 	"github.com/ethereum/go-ethereum/core/systemcontracts/demeter"
 	"github.com/ethereum/go-ethereum/core/systemcontracts/hera"
+	"github.com/ethereum/go-ethereum/core/systemcontracts/hermes"
 	"github.com/ethereum/go-ethereum/core/systemcontracts/poseidon"
 	"github.com/ethereum/go-ethereum/core/systemcontracts/theseus"
 	"github.com/ethereum/go-ethereum/core/systemcontracts/zeus"
@@ -60,7 +61,7 @@ var (
 
 	theseusUpgrade = make(map[string]*Upgrade)
 
-	lubanUpgrade = make(map[string]*Upgrade)
+	hermesUpgrade = make(map[string]*Upgrade)
 )
 
 func init() {
@@ -554,6 +555,96 @@ func init() {
 			},
 		},
 	}
+	hermesUpgrade[pigeonNet] = &Upgrade{
+		UpgradeName: "hermes",
+		Configs: []*UpgradeConfig{
+			{
+				ContractAddr: common.HexToAddress(ValidatorContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonValidatorContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(SlashContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonSlashContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(SystemRewardContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonSystemRewardContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(LightClientContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonLightClientContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(RelayerHubContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonRelayerHubContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(CandidateHubContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonCandidateHubContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(GovHubContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonGovHubContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(PledgeCandidateContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonPledgeCandidateContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(BurnContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonBurnContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(FoundationContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonFoundationContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(StakeHubContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonStakeHubContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(CoreAgentContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonCoreAgentContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(HashAgentContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonHashAgentContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(BTCAgentContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonBTCAgentContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(BTCStakeContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonBTCStakeContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(FeeMarketContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonFeeMarketContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(ChannelContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/55c040cc68598789111958020c1cba951752c999",
+				Code:         hermes.PigeonChannelContract,
+			},
+		},
+	}
 }
 
 func TryUpdateBuildInSystemContract(config *params.ChainConfig, blockNumber *big.Int, lastBlockTime uint64, blockTime uint64, statedb vm.StateDB, atBlockBegin bool) {
@@ -612,8 +703,8 @@ func upgradeBuildInSystemContract(config *params.ChainConfig, blockNumber *big.I
 	if config.IsOnTheseus(blockNumber, lastBlockTime, blockTime) {
 		applySystemContractUpgrade(theseusUpgrade[network], blockNumber, statedb, logger)
 	}
-	if config.IsOnLuban(blockNumber, lastBlockTime, blockTime) {
-		applySystemContractUpgrade(lubanUpgrade[network], blockNumber, statedb, logger)
+	if config.IsOnHermes(blockNumber, lastBlockTime, blockTime) {
+		applySystemContractUpgrade(hermesUpgrade[network], blockNumber, statedb, logger)
 	}
 	/*
 		apply other upgrades
