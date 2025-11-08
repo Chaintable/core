@@ -645,6 +645,96 @@ func init() {
 			},
 		},
 	}
+	hermesUpgrade[mainNet] = &Upgrade{
+		UpgradeName: "hermes",
+		Configs: []*UpgradeConfig{
+			{
+				ContractAddr: common.HexToAddress(ValidatorContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetValidatorContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(SlashContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetSlashContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(SystemRewardContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetSystemRewardContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(LightClientContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetLightClientContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(RelayerHubContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetRelayerHubContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(CandidateHubContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetCandidateHubContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(GovHubContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetGovHubContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(PledgeCandidateContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetPledgeCandidateContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(BurnContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetBurnContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(FoundationContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetFoundationContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(StakeHubContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetStakeHubContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(CoreAgentContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetCoreAgentContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(HashAgentContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetHashAgentContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(BTCAgentContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetBTCAgentContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(BTCStakeContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetBTCStakeContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(FeeMarketContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetFeeMarketContract,
+			},
+			{
+				ContractAddr: common.HexToAddress(ChannelContract),
+				CommitUrl:    "https://github.com/coredao-org/core-genesis-contract/commit/7f973185d67cea94518ff6a176d9ffa8e6eaad80",
+				Code:         hermes.MainnetChannelContract,
+			},
+		},
+	}
 }
 
 func TryUpdateBuildInSystemContract(config *params.ChainConfig, blockNumber *big.Int, lastBlockTime uint64, blockTime uint64, statedb vm.StateDB, atBlockBegin bool) {
