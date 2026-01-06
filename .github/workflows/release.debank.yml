@@ -55,7 +55,7 @@ jobs:
       - name: Lark Notification
         continue-on-error: true
         run: |
-          notiv3 "Blockchain client Erigon's image pushed 🎉" ${REGISTRY}/${IMAGE}:${REVISION}
+          notiv3 "Blockchain client core image pushed 🎉" ${REGISTRY}/${IMAGE}:${REVISION}
   # merge-docker-manifest:
   #   runs-on: [self-hosted, ops]
   #   needs: build-and-package
@@ -76,4 +76,4 @@ jobs:
   #     - name: Lark Notification
   #       continue-on-error: true
   #       run: |
-  #         notiv3 "Blockchain erigon image pushed 🎉" ${REGISTRY}/${IMAGE}:${REVISION}
+  #         notiv3 "Blockchain core image pushed 🎉" ${REGISTRY}/${IMAGE}:${REVISION}
