@@ -1,3 +1,24 @@
+# Chaintable write node
+
+> Fork of [coredao-org/core-chain](https://github.com/coredao-org/core-chain), with Chaintable pipeline patches.
+
+## Architecture
+
+This repo runs the chain's execution layer with the [Chaintable pipeline](https://github.com/Chaintable/pipeline) tracer embedded. The tracer extracts block data — block headers, transactions, call traces, receipts, events, and state diffs — and ships it to **S3 + Kafka** (see pipeline's [architecture](https://github.com/Chaintable/pipeline/blob/main/docs/architecture.md)). Two consumption paths:
+
+- **Block headers + state diffs** → Kafka + S3 → [leafage-evm](https://github.com/Chaintable/leafage-evm): a lightweight EVM executor serving state queries (`eth_call`, `eth_estimateGas`, …), no P2P sync, no tx storage (see its [architecture](https://github.com/Chaintable/leafage-evm#architecture)).
+- **Block files** (transactions · call traces · receipts · events) → S3 → Chaintable's transaction/trace indexing pipeline.
+
+```
+Chaintable write node (this repo · producer, embeds pipeline tracer)
+        │
+        ├─ block headers + state diffs ──────────────────→ Kafka + S3 ─→ leafage-evm (EVM state queries)
+        │
+        └─ block files (tx · trace · receipts · events) ──→ S3 ─→ Chaintable indexing pipeline (tx/trace data)
+```
+
+---
+
 ## Core chain
 
 Core is an evolution of the Geth codebase. We leveraged the improvements made by the BSC team to add greater throughput and cheaper transactions by way of hard fork. Nevertheless, we differ from BSC in many ways. One preeminent difference is that Core is based on Satoshi Plus Consensus which relies on Proof of Work (PoW) alongside Delegated Proof of Stake (DPoS). With these modifications, we’re able to remain decentralized without the performance tradeoffs seen in traditional PoW consensus systems. Additionally, with our hybrid score based off of both delegated Bitcoin hash power and delegated stake, we’ve created a fluid market for validators and rewards that anyone can participate in.
