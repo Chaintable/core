@@ -361,6 +361,29 @@ func (p *Satoshi) IsSystemContract(to *common.Address) bool {
 	return isToSystemContract(*to)
 }
 
+// verifyNonSystemZeroGasTxs rejects a transaction with a zero effective gas
+// price only when it does not target a built-in system contract. Transactions
+// directed at the system contracts are produced by the protocol itself and
+// legitimately carry a zero gas price, so they are exempt.
+func (p *Satoshi) verifyNonSystemZeroGasTxs(txs []*types.Transaction, header *types.Header) error {
+	if !p.chainConfig.IsCoreRewardFix(header.Number, header.Time) {
+		return nil
+	}
+	for _, tx := range txs {
+		eff := tx.GasPrice()
+		if header.BaseFee != nil {
+			eff = new(big.Int).Add(tx.EffectiveGasTipValue(header.BaseFee), header.BaseFee)
+		}
+		if eff.Sign() != 0 {
+			continue
+		}
+		if to := tx.To(); to == nil || !isToSystemContract(*to) {
+			return errors.New("zero gas price transaction is not an expected system transaction")
+		}
+	}
+	return nil
+}
+
 // Author implements consensus.Engine, returning the SystemAddress
 func (p *Satoshi) Author(header *types.Header) (common.Address, error) {
 	return header.Coinbase, nil
@@ -1459,6 +1482,20 @@ func (p *Satoshi) EstimateGasReservedForSystemTxs(chain consensus.ChainHeaderRea
 // rewards given.
 func (p *Satoshi) Finalize(chain consensus.ChainHeaderReader, header *types.Header, state vm.StateDB, txs *[]*types.Transaction,
 	uncles []*types.Header, _ []*types.Withdrawal, receipts *[]*types.Receipt, systemTxs *[]*types.Transaction, usedGas *uint64, tracer *tracing.Hooks) error {
+	if txs != nil {
+		if err := p.verifyNonSystemZeroGasTxs(*txs, header); err != nil {
+			return err
+		}
+	}
+	// The block reward path treats msg.sender == block.coinbase as an implicit
+	// authorization for the system reward call. A coinbase that carries an
+	// EIP-7702 delegation designator can re-enter that path from ordinary
+	// transactions, so a delegated coinbase is rejected outright.
+	if p.chainConfig.IsCoreRewardFix(header.Number, header.Time) {
+		if _, ok := types.ParseDelegation(state.GetCode(header.Coinbase)); ok {
+			return errors.New("coinbase account carries an EIP-7702 delegation")
+		}
+	}
 	// warn if not in majority fork
 	number := header.Number.Uint64()
 	snap, err := p.snapshot(chain, number-1, header.ParentHash, nil)
