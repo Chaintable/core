@@ -75,6 +75,8 @@ github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbi
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Chaintable/pipeline v0.0.57-core-debank-1 h1:tmsF/kHZHFhG3NpHTH7lvUa2tobdopu/6ua6Vv7wZFk=
 github.com/Chaintable/pipeline v0.0.57-core-debank-1/go.mod h1:FdZ4JpSW5BuvkTQH0EKYEDWa1qd4QsabLO1rod8dEeA=
+github.com/Chaintable/pipeline v0.0.57-core-debank-2.0.20261008105706-dd998738341e h1:33qzWgFLsG4zyWdWhwdz7qXMHwC2bgWJhSWBYgXY5dc=
+github.com/Chaintable/pipeline v0.0.57-core-debank-2.0.20261008105706-dd998738341e/go.mod h1:FdZ4JpSW5BuvkTQH0EKYEDWa1qd4QsabLO1rod8dEeA=
 github.com/DataDog/zstd v1.5.5 h1:oWf5W7GtOLgp6bciQYDmhHHjdhYkALu6S/5Ni9ZgSvQ=
 github.com/DataDog/zstd v1.5.5/go.mod h1:g4AWEaM3yOg3HYfnJ3YIawPnVdXJh9QME85blwSAmyw=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
