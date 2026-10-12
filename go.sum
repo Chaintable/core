@@ -73,6 +73,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/toml v1.3.2 h1:o7IhLm0Msx3BaB+n3Ag7L8EVlByGnpq14C4YWiu/gL8=
 github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
+github.com/Chaintable/pipeline v0.0.57-core-ct.3 h1:sjvq47mt7rnwAGA/V3H+eZr8r4KLX2s/FL5Fts0oVxY=
+github.com/Chaintable/pipeline v0.0.57-core-ct.3/go.mod h1:FdZ4JpSW5BuvkTQH0EKYEDWa1qd4QsabLO1rod8dEeA=
 github.com/Chaintable/pipeline v0.0.57-core-debank-1 h1:tmsF/kHZHFhG3NpHTH7lvUa2tobdopu/6ua6Vv7wZFk=
 github.com/Chaintable/pipeline v0.0.57-core-debank-1/go.mod h1:FdZ4JpSW5BuvkTQH0EKYEDWa1qd4QsabLO1rod8dEeA=
 github.com/DataDog/zstd v1.5.5 h1:oWf5W7GtOLgp6bciQYDmhHHjdhYkALu6S/5Ni9ZgSvQ=
