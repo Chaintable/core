@@ -326,3 +326,5 @@ replace (
 	github.com/grpc-ecosystem/grpc-gateway/v22/internal/descripto => github.com/prysmaticlabs/grpc-gateway/v2 v2.3.1-0.20210702154020-550e1cd83ec1
 	github.com/tendermint/tendermint => github.com/bnb-chain/tendermint v0.31.16
 )
+
+replace github.com/Chaintable/pipeline => /tmp/pw/core-failover
