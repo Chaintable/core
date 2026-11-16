@@ -4,7 +4,7 @@ go 1.23.0
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.2.0
-	github.com/Chaintable/pipeline v0.0.57-core-ct.3
+	github.com/Chaintable/pipeline v0.0.57-core-debank-2.0.20261113102408-dc094a9fd066
 	github.com/Microsoft/go-winio v0.6.2
 	github.com/VictoriaMetrics/fastcache v1.12.2
 	github.com/aws/aws-sdk-go-v2 v1.32.5
@@ -326,5 +326,3 @@ replace (
 	github.com/grpc-ecosystem/grpc-gateway/v22/internal/descripto => github.com/prysmaticlabs/grpc-gateway/v2 v2.3.1-0.20210702154020-550e1cd83ec1
 	github.com/tendermint/tendermint => github.com/bnb-chain/tendermint v0.31.16
 )
-
-replace github.com/Chaintable/pipeline => /tmp/pw/core-failover
