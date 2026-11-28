@@ -119,7 +119,18 @@ const (
 	bodyCacheLimit      = 256
 	blockCacheLimit     = 256
 	diffLayerCacheLimit = 1024
-	receiptsCacheLimit  = 10000
+	receiptsCacheLimit  = 1024
+
+	// receiptsCacheMaxLogs is the per-block log count above which the receipts
+	// are not cached at all. A cached receipt keeps every log of the block (and
+	// the log data buffers) alive, so on a chain that emits thousands of logs
+	// per block even a small LRU can pin gigabytes of memory.
+	receiptsCacheMaxLogs = 512
+
+	// maxStateLag bounds how many blocks the persisted state may lag behind the
+	// chain head. Without a hard bound a stalled flush leaves the disk layer far
+	// behind, and an unclean shutdown then forces a rewind back to it on restart.
+	maxStateLag         = 4096
 	sidecarsCacheLimit  = 1024
 	txLookupCacheLimit  = 1024
 	maxFutureBlocks     = 256
@@ -640,6 +651,17 @@ func (bc *BlockChain) FeeMarket() *feemarket.FeeMarket {
 }
 
 func (bc *BlockChain) cacheReceipts(hash common.Hash, receipts types.Receipts, block *types.Block) {
+	// Blocks that emit thousands of logs would pin far too much memory when
+	// cached, since every receipt keeps its logs (including the copied log data
+	// buffers) reachable. Skip them and let RPC read the receipts from disk.
+	var numOfLogs int
+	for _, receipt := range receipts {
+		numOfLogs += len(receipt.Logs)
+	}
+	if numOfLogs > receiptsCacheMaxLogs {
+		return
+	}
+
 	// TODO, This is a hot fix for the block hash of logs is `0x0000000000000000000000000000000000000000000000000000000000000000` for system tx
 	// Please check details in https://github.com/bnb-chain/bsc/issues/443
 	// This is a temporary fix, the official fix should be a hard fork.
@@ -1891,10 +1913,20 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.
 	// Find the next state trie we need to commit
 	chosen := current - state.TriesInMemory
 	flushInterval := time.Duration(bc.flushInterval.Load())
+	// The persisted state must never lag too far behind the head: if the process
+	// is killed while the disk layer is far behind, the next startup can only
+	// rewind to it and has to re-execute everything above it.
+	// lastWrite is zero until the first commit of this process, in which case
+	// there is no meaningful lag to measure yet.
+	var lag uint64
+	if bc.lastWrite != 0 && current > bc.lastWrite {
+		lag = current - bc.lastWrite
+	}
+	overdue := bc.lastWrite != 0 && lag >= maxStateLag
 	// If we exceeded out time allowance, flush an entire trie to disk
-	if bc.gcproc > flushInterval {
+	if bc.gcproc > flushInterval || overdue {
 		canWrite := true
-		if posa, ok := bc.engine.(consensus.PoSA); ok {
+		if posa, ok := bc.engine.(consensus.PoSA); ok && !overdue {
 			if !posa.EnoughDistance(bc, block.Header()) {
 				canWrite = false
 			}
@@ -1910,6 +1942,9 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.
 				// warn the user that the system is becoming unstable.
 				if chosen < bc.lastWrite+state.TriesInMemory && bc.gcproc >= 2*flushInterval {
 					log.Info("State in memory for too long, committing", "time", bc.gcproc, "allowance", flushInterval, "optimum", float64(chosen-bc.lastWrite)/float64(state.TriesInMemory))
+				}
+				if overdue {
+					log.Info("State flush overdue, committing", "number", chosen, "lag", lag)
 				}
 				// Flush an entire trie and restart the counters
 				bc.triedb.Commit(header.Root, true)
